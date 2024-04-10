@@ -68,15 +68,14 @@
         }
 
         .img-box {
-            width: 60%;
-            min-height: 100px;
             overflow: hidden;
             background-color: #f2f2f2;
             margin: 12px auto;
         }
 
         .img-box img {
-            max-width: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover
         }
 
@@ -177,10 +176,10 @@
             return (
                 <div className="news-list" >
                     {currentData && currentData.map((news, index) => (
-                        <div key={index} className="news-item " onClick={() => goDetail(news.html_url)} style={{ flex: `0 0 calc(${columnWidth} - 16px)` }}>
+                        <div key={news.id} className="news-item " onClick={() => goDetail(news.html_url)} style={{ flex: `0 0 calc(${columnWidth} - 16px)` }}>
                             <div className="news-item-content" style={{ width: '100%' }}>
                                 <div className="news-item-index">#{index + 1}</div>
-                                <div className="img-box" >
+                                <div className="img-box" style={{ width: newsItemWidth, height: newsItemWidth }} >
                                     <img className="lazyload" data-src={`${news.owner.avatar_url}?t=${Date.now()}`} alt={news.title} />
                                 </div>
                                 <div className="news-item-title text-restriction">{news.name}</div>
@@ -229,7 +228,6 @@
             }
             //为每个tab准备一个缓存数组
             const [allData, setAllData] = useState({ 1: { list: [], pageNumber: 1 }, 2: { list: [], pageNumber: 1 }, 3: { list: [], pageNumber: 1 }, 4: { list: [], pageNumber: 1 }, 5: { list: [], pageNumber: 1 }, 6: { list: [], pageNumber: 1 } })
-            const [currentPageNumber, setCurrentPageNumber] = useState(1)
             const [currentIndex, setCurrentIndex] = useState(1)
             const [columnWidth, setColumnWidth] = useState('25%');
             const [newsItemWidth, setNewsItemWidth] = useState('100px');
@@ -241,7 +239,6 @@
             const listenUrlChange = (newValue) => {
                 setCurrentTypeUrl(url[newValue]);
                 setCurrentIndex(newValue)
-                setCurrentPageNumber(newValue)
                 if (allData[newValue].list.length == 0) {
                     fetchDataFun(1, newValue)
                 }
@@ -251,13 +248,13 @@
                 const handleResize = () => {
                     if (window.matchMedia('(max-width: 900px)').matches) {
                         setColumnWidth('50%');
-                        setNewsItemWidth('100px');
+                        setNewsItemWidth('186px');
                     } else if (window.matchMedia('(max-width: 1450px)').matches) {
                         setColumnWidth('33.3%');
-                        setNewsItemWidth('250px');
+                        setNewsItemWidth('215px');
                     } else {
                         setColumnWidth('25%');
-                        setNewsItemWidth('250px');
+                        setNewsItemWidth('254px');
                     }
                 };
                 // 监听窗口大小变化
