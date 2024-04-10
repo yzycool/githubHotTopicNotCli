@@ -258,13 +258,10 @@
                         setNewsItemWidth('250px');
                     }
                 };
-
                 // 监听窗口大小变化
                 window.addEventListener('resize', handleResize);
-
                 // 初始化一次
                 handleResize();
-
                 // 清除监听器
                 return () => window.removeEventListener('resize', handleResize);
             }, []);
@@ -273,8 +270,8 @@
                 // 检查是否滚动到页面底部
                 if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
                     if (!loading && hasMore) {
-                        setPageNumber(pageNumber + 1)
-                        console.log('滚到底了2', pageNumber)
+                        let pageNumber = allData[currentIndex].pageNumber += 1;
+                        fetchDataFun(pageNumber)
                     }
                 }
             }
@@ -283,8 +280,13 @@
                 window.addEventListener('scroll', handleScroll)
                 return () => window.removeEventListener('scroll', handleScroll)
             }, [handleScroll,])
-
-            const fetchDataFun = async () => {
+            useEffect(() => {
+                // 切换tab依赖
+                if (allData[currentIndex].list.length == 0) {
+                    fetchDataFun()
+                }
+            }, [currentIndex])
+            const fetchDataFun = async (pageNumber = 1) => {
                 try {
                     setLoading(true)
                     console.log('pageNumber', pageNumber)
@@ -293,7 +295,7 @@
                     console.log('response', currentIndex, newData)
                     const newAllData = ({
                         ...allData,
-                        [currentIndex]: { list: newData, pageNumber: currentIndex }
+                        [currentIndex]: { list: newData, pageNumber: pageNumber }
                     });
                     setAllData(newAllData);
                     // setCurrentData(newAllData[currentIndex].list)
@@ -313,13 +315,13 @@
 
                 console.log('tab, newData', allData)
             };
-            useEffect(() => {
-                // 加载数据
-                if (!loading && hasMore) {
-                    console.log('第一次请求')
-                    fetchDataFun()
-                }
-            }, [pageNumber, currentTypeUrl])
+            // useEffect(() => {
+            //     // 加载数据
+            //     if (!loading && hasMore) {
+            //         console.log('第一次请求')
+            //         fetchDataFun()
+            //     }
+            // }, [])
             //页面刷新
             useEffect(() => {
                 getRouteParams()
