@@ -137,13 +137,11 @@
         const { useState, useEffect } = window.React;
 
 
-        const NewsNav = ({ listenUrlChange }) => {
-            const [activeIndex, setActiveIndex] = useState(1);
+        const NewsNav = ({ listenUrlChange, currentIndex }) => {
             // 点击导航项时触发的事件处理函数
             const handleItemClick = (index) => {
-                setActiveIndex(index); // 设置点击项为激活状态
                 listenUrlChange(index)
-                // addParameter(index)
+                addParameter(index)
             };
             function addParameter (parameterValue) {
                 // 获取当前页面的 URL
@@ -159,16 +157,16 @@
                 var newUrl = currentUrl + separator + parameterName + '=' + encodeURIComponent(parameterValue);
 
                 // 导航到新的 URL
-                window.location.replace(newUrl);
+                history.pushState(null, null, newUrl);
             }
             return (
                 <div className="news-nav">
-                    <span className={`news-nav-item ${activeIndex === 1 ? 'active' : ''}`} onClick={() => handleItemClick(1)}>All</span>
-                    <span className={`news-nav-item ${activeIndex === 2 ? 'active' : ''}`} onClick={() => handleItemClick(2)}>Javascript</span>
-                    <span className={`news-nav-item ${activeIndex === 3 ? 'active' : ''}`} onClick={() => handleItemClick(3)}>Ruby</span>
-                    <span className={`news-nav-item ${activeIndex === 4 ? 'active' : ''}`} onClick={() => handleItemClick(4)}>Java</span>
-                    <span className={`news-nav-item ${activeIndex === 5 ? 'active' : ''}`} onClick={() => handleItemClick(5)}>Css</span>
-                    <span className={`news-nav-item ${activeIndex === 6 ? 'active' : ''}`} onClick={() => handleItemClick(6)}>Python</span>
+                    <span className={`news-nav-item ${currentIndex === 1 ? 'active' : ''}`} onClick={() => handleItemClick(1)}>All</span>
+                    <span className={`news-nav-item ${currentIndex === 2 ? 'active' : ''}`} onClick={() => handleItemClick(2)}>Javascript</span>
+                    <span className={`news-nav-item ${currentIndex === 3 ? 'active' : ''}`} onClick={() => handleItemClick(3)}>Ruby</span>
+                    <span className={`news-nav-item ${currentIndex === 4 ? 'active' : ''}`} onClick={() => handleItemClick(4)}>Java</span>
+                    <span className={`news-nav-item ${currentIndex === 5 ? 'active' : ''}`} onClick={() => handleItemClick(5)}>Css</span>
+                    <span className={`news-nav-item ${currentIndex === 6 ? 'active' : ''}`} onClick={() => handleItemClick(6)}>Python</span>
                 </div >
             )
         }
@@ -240,7 +238,6 @@
             const [pageNumber, setPageNumber] = useState(1);
             const [hasMore, setHasMore] = useState(true)
             const listenUrlChange = (newValue) => {
-                setCurrentTypeUrl(url[newValue]);
                 setCurrentIndex(newValue)
                 setCurrentPageNumber(newValue)
             };
@@ -270,6 +267,7 @@
                 // 检查是否滚动到页面底部
                 if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
                     if (!loading && hasMore) {
+                        console.log('scrollRequest')
                         let pageNumber = allData[currentIndex].pageNumber += 1;
                         fetchDataFun(pageNumber)
                     }
@@ -283,14 +281,19 @@
             useEffect(() => {
                 // 切换tab依赖
                 if (allData[currentIndex].list.length == 0) {
+                    console.log('currentIndexRequest')
                     fetchDataFun()
                 }
             }, [currentIndex])
+            //页面刷新
+            useEffect(() => {
+                getRouteParams()
+            }, [])
             const fetchDataFun = async (pageNumber = 1) => {
                 try {
                     setLoading(true)
                     console.log('pageNumber', pageNumber)
-                    const response = await fetchData(`${currentTypeUrl}&per_page=10&page=${pageNumber}`)
+                    const response = await fetchData(`${url[currentIndex]}&per_page=10&page=${pageNumber}`)
                     const newData = [...allData[currentIndex].list, ...response.items]
                     console.log('response', currentIndex, newData)
                     const newAllData = ({
@@ -322,13 +325,10 @@
             //         fetchDataFun()
             //     }
             // }, [])
-            //页面刷新
-            useEffect(() => {
-                getRouteParams()
-            }, [])
+
             // 获取 URL 中的参数
             function getRouteParams () {
-                // console.log('刷新刷新')
+                console.log('刷新刷新')
                 const params = {};
                 const queryString = window.location.search.substring(1); // 获取 URL 中的查询字符串部分
 
@@ -337,13 +337,15 @@
                     const [key, value] = param.split('=');
                     params[key] = decodeURIComponent(value);
                 });
-                // setCurrentTypeUrl(params.technologyType)
+                if (params.technologyType) {
+                    setCurrentIndex(params.technologyType)
+                }
             }
             return (
                 <div className="App">
                     <div className="web-title">github 热门站</div>
                     <div className="news-container" >
-                        <NewsNav listenUrlChange={listenUrlChange} />
+                        <NewsNav listenUrlChange={listenUrlChange} currentIndex={Number(currentIndex)} />
                         <NewsList currentData={allData[currentIndex].list} columnWidth={columnWidth} newsItemWidth={newsItemWidth} />
                     </div>
 
