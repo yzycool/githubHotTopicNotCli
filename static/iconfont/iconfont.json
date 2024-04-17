@@ -1,0 +1,37 @@
+{
+  "id": "4511544",
+  "name": "companyIcon",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5072112",
+      "name": "star",
+      "font_class": "star",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "19675080",
+      "name": "告警关闭",
+      "font_class": "issuesclose",
+      "unicode": "eb2e",
+      "unicode_decimal": 60206
+    },
+    {
+      "icon_id": "19709872",
+      "name": "分支",
+      "font_class": "fork",
+      "unicode": "ebd3",
+      "unicode_decimal": 60371
+    },
+    {
+      "icon_id": "18444826",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    }
+  ]
+}

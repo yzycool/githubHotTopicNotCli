@@ -1,3 +1,12 @@
+@import 'static/iconfont/iconfont.css';
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
 /*屏幕宽度小于 640px,改变布局和样式*/
 @media screen and (max-width: 640px) {
   .news-item {
@@ -126,6 +135,7 @@
 }
 
 .news-text {
+  margin-left: 6px;
 }
 
 .loading {
