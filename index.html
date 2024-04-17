@@ -6,117 +6,11 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <title>My React App</title>
+    <link rel="stylesheet" href="./index.css" />
 </head>
 
 <body>
-    <style rel="stylesheet">
-        .App {
-            min-width: 700px;
-        }
 
-        .web-title {
-            font-size: 28px;
-            font-weight: 600;
-            margin: 26px auto;
-            width: 100%;
-            text-align: center;
-        }
-
-
-        .news-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .news-item {
-            margin: 8px;
-            box-sizing: border-box;
-        }
-
-        .news-item-content {
-            overflow: hidden;
-            background-image: linear-gradient(160deg, rgb(204, 251, 252), rgb(197, 234, 254), rgb(189, 211, 255));
-            padding: 12px;
-            box-sizing: border-box;
-        }
-
-        .news-item-index {
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-            width: 100%;
-        }
-
-        .news-item-title {
-            font-weight: 600;
-            margin: auto;
-        }
-
-        .text-restriction {
-            width: 150px;
-            text-overflow: clip;
-            white-space: nowrap;
-            overflow: hidden;
-
-        }
-
-        .news-nav {
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-            margin: 12px auto;
-        }
-
-        .img-box {
-            overflow: hidden;
-            background-color: #f2f2f2;
-            margin: 12px auto;
-        }
-
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover
-        }
-
-        .user-info-box {
-            display: flex;
-            margin: 6px 0;
-        }
-
-        .news-nav-item {
-            padding: 10px 20px;
-            box-sizing: border-box;
-            font-size: 16px;
-            color: rgb(51, 51, 51);
-            background-image: linear-gradient(160deg, rgb(204, 251, 252), rgb(197, 234, 254), rgb(189, 211, 255));
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-family: xinxihei, Helvetica Neue, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-
-        }
-
-        .news-nav .active {
-            color: red;
-        }
-
-        .news-nav-item:hover {
-            background-color: #0056b3;
-        }
-
-        .news-text {}
-
-        .loading {
-            text-align: center;
-            line-height: 200px;
-            font-size: 18px;
-            color: black;
-        }
-    </style>
     <div id="root"></div>
     <!-- 引入lazy-image库 -->
     <script src="./lazysizes.min.js" async=""></script>
@@ -170,17 +64,17 @@
                 </div >
             )
         }
-        const NewsList = ({ currentData, columnCount, columnWidth, newsItemWidth }) => {
+        const NewsList = ({ currentData, columnCount }) => {
             const goDetail = (url) => {
                 window.open(url)
             }
             return (
                 <div className="news-list" >
                     {currentData && currentData.map((news, index) => (
-                        <div key={news.id} className="news-item " onClick={() => goDetail(news.html_url)} style={{ flex: `0 0 calc(${columnWidth} - 16px)` }}>
+                        <div key={news.id} className="news-item " onClick={() => goDetail(news.html_url)}>
                             <div className="news-item-content" style={{ width: '100%' }}>
                                 <div className="news-item-index">#{index + 1}</div>
-                                <div className="img-box" style={{ width: newsItemWidth, height: newsItemWidth }} >
+                                <div className="img-box"  >
                                     <img className="lazyload" data-src={`${news.owner.avatar_url}?t=${Date.now()}`} alt={news.title} />
                                 </div>
                                 <div className="news-item-title text-restriction">{news.name}</div>
@@ -230,8 +124,6 @@
             //为每个tab准备一个缓存数组
             const [allData, setAllData] = useState({ 1: { list: [], pageNumber: 1 }, 2: { list: [], pageNumber: 1 }, 3: { list: [], pageNumber: 1 }, 4: { list: [], pageNumber: 1 }, 5: { list: [], pageNumber: 1 }, 6: { list: [], pageNumber: 1 } })
             const [currentIndex, setCurrentIndex] = useState(1)
-            const [columnWidth, setColumnWidth] = useState('25%');
-            const [newsItemWidth, setNewsItemWidth] = useState('100px');
             const [currentTypeUrl, setCurrentTypeUrl] = useState(url[1]);
             const [loading, setLoading] = useState(false)
             const [pageNumber, setPageNumber] = useState(1);
@@ -244,27 +136,6 @@
                     fetchDataFun(1, newValue)
                 }
             };
-
-            useEffect(() => {
-                const handleResize = () => {
-                    if (window.matchMedia('(max-width: 900px)').matches) {
-                        setColumnWidth('50%');
-                        setNewsItemWidth('186px');
-                    } else if (window.matchMedia('(max-width: 1450px)').matches) {
-                        setColumnWidth('33.3%');
-                        setNewsItemWidth('215px');
-                    } else {
-                        setColumnWidth('25%');
-                        setNewsItemWidth('254px');
-                    }
-                };
-                // 监听窗口大小变化
-                window.addEventListener('resize', handleResize);
-                // 初始化一次
-                handleResize();
-                // 清除监听器
-                return () => window.removeEventListener('resize', handleResize);
-            }, []);
 
             const handleScroll = () => {
                 // 检查是否滚动到页面底部
@@ -313,9 +184,6 @@
                     const [key, value] = param.split('=');
                     params[key] = decodeURIComponent(value);
                 });
-                // if (params.technologyType) {
-                //     setCurrentIndex(params.technologyType)
-                // }
                 return params.technologyType || 1
             }
 
@@ -336,7 +204,7 @@
                     <div className="web-title">github 热门站</div>
                     <div className="news-container" >
                         <NewsNav listenUrlChange={listenUrlChange} currentIndex={Number(currentIndex)} />
-                        <NewsList currentData={allData[currentIndex].list} columnWidth={columnWidth} newsItemWidth={newsItemWidth} />
+                        <NewsList currentData={allData[currentIndex].list} />
                     </div>
 
                     {loading && <div className="loading">Loading...</div>}
